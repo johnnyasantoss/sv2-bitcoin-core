@@ -2,9 +2,17 @@ use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    let out_path = PathBuf::from(
-        env::var("OUT_DIR").expect("OUT_DIR was not defined by the cargo environment!"),
-    );
+    let gen_dir = PathBuf::from(
+        env::var("CARGO_MANIFEST_DIR")
+            .expect("CARGO_MANIFEST_DIR was not defined by the cargo environment!"),
+    )
+    .join("src")
+    .join("gen")
+    .to_str()
+    .unwrap()
+    .to_string();
+
+    let out_path = PathBuf::from(gen_dir);
 
     // Ensure rebuild when any capnp file changes
     println!("cargo:rerun-if-changed=capnp");

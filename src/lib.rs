@@ -2,29 +2,18 @@
 //!
 //! A library to interact with Bitcoin Core via IPC and get Stratum V2 Template Distribution Protocol.
 
-// Generated Cap'n Proto modules
-mod common_capnp {
-    include!(concat!(env!("OUT_DIR"), "/common_capnp.rs"));
-}
-mod init_capnp {
-    include!(concat!(env!("OUT_DIR"), "/init_capnp.rs"));
-}
-mod mining_capnp {
-    include!(concat!(env!("OUT_DIR"), "/mining_capnp.rs"));
-}
-mod proxy_capnp {
-    include!(concat!(env!("OUT_DIR"), "/proxy_capnp.rs"));
-}
-mod echo_capnp {
-    include!(concat!(env!("OUT_DIR"), "/echo_capnp.rs"));
-}
-
 pub mod error;
 
-use crate::mining_capnp::block_template::Client as BlockTemplateIpcClient;
-use crate::mining_capnp::mining::Client as MiningIpcClient;
-use crate::proxy_capnp::thread::Client as ThreadIpcClient;
-use crate::proxy_capnp::thread_map::Client as ThreadMapIpcClient;
+/// Generated Cap'n Proto modules
+mod gen;
+
+/// Generated Cap'n Proto modules
+pub use gen::*;
+
+use crate::gen::mining_capnp::block_template::Client as BlockTemplateIpcClient;
+use crate::gen::mining_capnp::mining::Client as MiningIpcClient;
+use crate::gen::proxy_capnp::thread::Client as ThreadIpcClient;
+use crate::gen::proxy_capnp::thread_map::Client as ThreadMapIpcClient;
 use crate::template_data::TemplateData;
 
 use roles_logic_sv2::bitcoin::{block::Block, consensus::deserialize, Transaction};
@@ -92,7 +81,7 @@ impl Sv2BitcoinCore {
         ));
 
         let mut rpc_system = RpcSystem::new(rpc_network, None);
-        let bootstrap_client: crate::init_capnp::init::Client =
+        let bootstrap_client: crate::gen::init_capnp::init::Client =
             rpc_system.bootstrap(rpc_twoparty_capnp::Side::Server);
 
         tokio::task::spawn_local(rpc_system);
